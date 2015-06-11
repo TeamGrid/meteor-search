@@ -21,7 +21,7 @@ class TeamSearch extends PackageBase(settings)
     for field in options.indexFields
       indexes[field] = 'text'
     existingIndex = @_getTextIndex collection
-    if existingIndex isnt @_getIndexName(options.indexFields)
+    if existingIndex? and existingIndex isnt @_getIndexName(options.indexFields)
       @log "resetting text index for #{collectionName}", 'warn'
       collection._dropIndex existingIndex
     collection._ensureIndex indexes
