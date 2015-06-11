@@ -1,0 +1,7 @@
+<template name="TeamSearch">
+  {{#if Template.subscriptionsReady}}
+    {{> UI.contentBlock searchItems=items}}
+  {{else}}
+    {{> UI.elseBlock}}
+  {{/if}}
+</template>
