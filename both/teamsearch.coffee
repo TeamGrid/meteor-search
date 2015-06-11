@@ -73,7 +73,10 @@ class TeamSearch extends PackageBase(settings)
 
     searchCollection = @_getSearchCollectionName params.name
     for name, options of params.definition.collections
-      cursor = @_getSearchCursor name, options, params.text, params.data
+      thisValue =
+        userId: params.publication.userId
+
+      cursor = @_getSearchCursor.call thisValue, name, options, params.text, params.data
       observeHandles.push cursor.observeChanges
         added: (id, fields) ->
           params.publication.added searchCollection, id, _.extend(fields, originalCollection: name)
@@ -86,9 +89,9 @@ class TeamSearch extends PackageBase(settings)
 
   @_getSearchCursor: (collectionName, params, searchValue, data) ->
     collection = Mongo.Collection.get collectionName
-    query = {}
-    query = $text: $search: searchValue if params.indexFields?.length > 0
-    options =
+    @query = {}
+    @query = $text: $search: searchValue if params.indexFields?.length > 0
+    @options =
       fields:
         score: $meta: 'textScore'
       sort:
@@ -96,16 +99,16 @@ class TeamSearch extends PackageBase(settings)
 
 
     if typeof params.query is 'function'
-      query = params.query.call query, searchValue, data
+      @query = params.query.call this, searchValue, data
     else
-      query = _.extend query, params.query
+      @query = _.extend @query, params.query
 
     if typeof params.options is 'function'
-      options = params.options.call options, searchValue, data
+      @options = params.options.call this, searchValue, data
     else
-      options = _.extend options, params.options
+      @options = _.extend @options, params.options
 
-    return collection.find query, options
+    return collection.find @query, @options
 
   @_getSearchCollectionName: (name) -> "_searchCollection_#{name}"
 
