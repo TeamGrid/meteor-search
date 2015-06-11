@@ -44,6 +44,7 @@ class TeamSearch extends PackageBase(settings)
       check params,
         name: String
         text: Match.Optional String
+        data: Match.Optional Object
 
       return @ready() unless params.text?
 
@@ -51,6 +52,7 @@ class TeamSearch extends PackageBase(settings)
         return self._publishSearch.call self,
           name: params.name
           text: params.text
+          data: params.data
           definition: def
           publication: this
 
@@ -60,6 +62,7 @@ class TeamSearch extends PackageBase(settings)
     check params,
       name: String
       text: String
+      data: Match.Optional Object
       definition:
         collections: Object
       publication: Match.Any
@@ -70,7 +73,7 @@ class TeamSearch extends PackageBase(settings)
 
     searchCollection = @_getSearchCollectionName params.name
     for name, options of params.definition.collections
-      cursor = @_getSearchCursor name, options, params.text
+      cursor = @_getSearchCursor name, options, params.text, params.data
       observeHandles.push cursor.observeChanges
         added: (id, fields) ->
           params.publication.added searchCollection, id, _.extend(fields, originalCollection: name)
@@ -81,7 +84,7 @@ class TeamSearch extends PackageBase(settings)
 
     return params.publication.ready()
 
-  @_getSearchCursor: (collectionName, params, searchValue) ->
+  @_getSearchCursor: (collectionName, params, searchValue, data) ->
     collection = Mongo.Collection.get collectionName
     query = {}
     query = $text: $search: searchValue if params.indexFields?.length > 0
@@ -93,12 +96,12 @@ class TeamSearch extends PackageBase(settings)
 
 
     if typeof params.query is 'function'
-      query = params.query.call query, searchValue
+      query = params.query.call query, searchValue, data
     else
       query = _.extend query, params.query
 
     if typeof params.options is 'function'
-      options = params.options.call options, searchValue
+      options = params.options.call options, searchValue, data
     else
       options = _.extend options, params.options
 
@@ -110,6 +113,7 @@ class TeamSearch extends PackageBase(settings)
     template.subscribe 'teamSearch',
       name: data.name
       text: data.searchValue
+      data: _.omit data, ['name', 'searchValue']
 
   @define: (options) ->
     if Meteor.isClient

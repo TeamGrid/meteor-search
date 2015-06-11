@@ -19,6 +19,8 @@ TeamSearch.define
         indexFields: ['name']
         query:
           archived: $ne: true
+        query: (searchValue, data) ->
+          _.extend this, authorId: data.authorId
         options:
           fields:
             name: 1
