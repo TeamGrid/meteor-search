@@ -1,7 +1,7 @@
 Package.describe({
   name: 'team:search',
   summary: 'fulltext-search over multiple collections',
-  version: '1.1.2'
+  version: '1.1.3'
 });
 
 Package.onUse(function(api) {

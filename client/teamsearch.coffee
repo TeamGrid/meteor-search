@@ -4,7 +4,9 @@ Template.TeamSearch.helpers
     return cursor if cursor?.count() > 0
 
 Template.TeamSearch.onCreated ->
-  @_searchCollection =  new Mongo.Collection TeamSearch._getSearchCollectionName @data.name
+  @_searchCollection = Mongo.Collection.get TeamSearch._getSearchCollectionName @data.name
+  unless @_searchCollection?
+    @_searchCollection =  new Mongo.Collection TeamSearch._getSearchCollectionName @data.name
   @_searchCollection._transform = (doc) ->
     originalCollection = Mongo.Collection.get doc.originalCollection
     transformed = originalCollection?._transform? doc
