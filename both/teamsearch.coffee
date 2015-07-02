@@ -18,6 +18,7 @@ class TeamSearch extends PackageBase(settings)
   @_ensureIndex: (collectionName, options) ->
     collection = Mongo.Collection.get(collectionName)
     indexes = {}
+    return unless options.indexFields?
     for field in options.indexFields
       indexes[field] = 'text'
     existingIndex = @_getTextIndex collection
