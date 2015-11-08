@@ -1,10 +1,10 @@
-# team:search
+# teamgrid:search
 Meteor package that provides a simple API for implementing a fulltext-search.
 
 ## Installation
 ````
 
-    meteor add team:search
+    meteor add teamgrid:search
 
 ````
 
