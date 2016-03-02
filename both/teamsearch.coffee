@@ -44,9 +44,10 @@ class TeamSearch extends PackageBase(settings)
     Meteor.publish 'teamSearch', (params) ->
       check params,
         name: String
-        text: String
+        text: Match.Optional String
         data: Match.Optional Object
 
+      return @ready() unless params.text
       for name, def of self._definitions when name is params.name
         return @ready() if params.text.length < (def.threshold or 1)
         return self._publishSearch.call self,
