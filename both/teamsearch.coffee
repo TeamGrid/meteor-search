@@ -44,10 +44,8 @@ class TeamSearch extends PackageBase(settings)
     Meteor.publish 'teamSearch', (params) ->
       check params,
         name: String
-        text: Match.Optional String
+        text: String
         data: Match.Optional Object
-
-      return @ready() unless params.text?
 
       for name, def of self._definitions when name is params.name
         return self._publishSearch.call self,
@@ -69,6 +67,7 @@ class TeamSearch extends PackageBase(settings)
       publication: Match.Any
 
     observeHandles = []
+    return params.publication.ready() unless params.text
     params.publication.onStop -> # cleanup
       handle.stop() for handle in observeHandles
 
@@ -114,6 +113,7 @@ class TeamSearch extends PackageBase(settings)
   @_getSearchCollectionName: (name) -> "_searchCollection_#{name}"
 
   @_subscribe: (template, data) ->
+    return unless data.searchValue
     template.subscribe 'teamSearch',
       name: data.name
       text: data.searchValue
