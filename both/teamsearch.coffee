@@ -48,6 +48,7 @@ class TeamSearch extends PackageBase(settings)
         data: Match.Optional Object
 
       for name, def of self._definitions when name is params.name
+        return @ready() if params.text.length < (def.threshold or 1)
         return self._publishSearch.call self,
           name: params.name
           text: params.text
@@ -63,11 +64,11 @@ class TeamSearch extends PackageBase(settings)
       text: String
       data: Match.Optional Object
       definition:
+        threshold: Match.Optional Number
         collections: Object
       publication: Match.Any
 
     observeHandles = []
-    return params.publication.ready() unless params.text
     params.publication.onStop -> # cleanup
       handle.stop() for handle in observeHandles
 

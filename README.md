@@ -14,6 +14,7 @@ Meteor package that provides a simple API for implementing a fulltext-search.
 ````coffee
 TeamSearch.define
   uniqueSearchName:
+    threshold: 3
     collections:
       posts:
         indexFields: ['name']
@@ -24,6 +25,7 @@ TeamSearch.define
         options:
           fields:
             name: 1
+            limit: 10
 ````
 
 ### On client
