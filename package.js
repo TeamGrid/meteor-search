@@ -9,6 +9,7 @@ Package.onUse(function(api) {
   api.use([
     'coffeescript',
     'underscore',
+    'reactive-var',
     'check',
     'templating@1.0.0',
     'blaze@2.0.0',

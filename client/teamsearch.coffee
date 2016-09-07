@@ -11,5 +11,9 @@ Template.TeamSearch.onCreated ->
     originalCollection = Mongo.Collection.get doc.originalCollection
     transformed = originalCollection?._transform? doc
     return transformed or doc
+
+  @searchData = new ReactiveVar(@data, _.isEqual)
   @autorun =>
-    TeamSearch._subscribe this, Template.currentData()
+    @searchData.set Template.currentData()
+  @autorun =>
+    TeamSearch._subscribe this, @searchData.get()
