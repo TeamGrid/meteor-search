@@ -1,7 +1,7 @@
 Package.describe({
   name: 'teamgrid:search',
   summary: 'fulltext-search over multiple collections',
-  version: '1.1.6'
+  version: '1.1.7'
 });
 
 Package.onUse(function(api) {
